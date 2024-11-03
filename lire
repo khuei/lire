@@ -72,17 +72,17 @@ def display_chapters(stdscr, chapters):
         stdscr.refresh()
         visible_lines = height - 2
         key = stdscr.getch()
-        if key == curses.KEY_DOWN:
+        if key == curses.KEY_DOWN or key == ord('j'):
             if start_line < len(wrap_text(chapter, curses.COLS)) - visible_lines:
                 start_line += 1
-        elif key == curses.KEY_UP:
+        elif key == curses.KEY_UP or key == ord('k'):
             if start_line > 0:
                 start_line -= 1
-        elif key == curses.KEY_RIGHT or key == ord('d'):
+        elif key == curses.KEY_RIGHT or key == ord('l'):
             if current_chapter < total_chapters - 1:
                 current_chapter += 1
                 start_line = 0
-        elif key == curses.KEY_LEFT or key == ord('a'):
+        elif key == curses.KEY_LEFT or key == ord('h'):
             if current_chapter > 0:
                 current_chapter -= 1
                 start_line = 0
