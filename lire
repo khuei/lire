@@ -16,6 +16,41 @@ def extract_text_by_chapter(book):
         chapters.append(chapter_text)
     return chapters
 
+def wrap_text(text, width):
+    wrapped_lines = []
+    lines = text.splitlines()
+    current_paragraph = []
+    for line in lines:
+        if line.strip() and not line.startswith(' '):
+            if current_paragraph:
+                wrapped_lines.extend(wrap_paragraph(current_paragraph, width))
+                wrapped_lines.append("")
+                current_paragraph = []
+            current_paragraph.append(line.strip())
+        else:
+            current_paragraph.append(line.strip())
+    if current_paragraph:
+        wrapped_lines.extend(wrap_paragraph(current_paragraph, width))
+    return wrapped_lines
+
+def wrap_paragraph(paragraph_lines, width):
+    wrapped = []
+    current_line = ""
+    for line in paragraph_lines:
+        words = line.split()
+        for word in words:
+            if len(current_line) + len(word) + (1 if current_line else 0) > width:
+                wrapped.append(current_line)
+                current_line = word
+            else:
+                if current_line:
+                    current_line += " "
+                current_line += word
+        if current_line: 
+            wrapped.append(current_line)
+            current_line = ""
+    return wrapped
+
 def display_chapter(stdscr, chapter, start_line, height, chapter_number, total_chapters):
     lines = wrap_text(chapter, curses.COLS)
     max_lines = len(lines)
