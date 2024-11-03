@@ -14,8 +14,7 @@ def main():
     args = parser.parse_args()
     book = epub.read_epub(args.input_path)
     chapters = extract_text_by_chapter(book)
-    if args.output:
-        save_chapters_to_files(chapters, args.output)
+
     def curses_main(stdscr):
         display_chapters(stdscr, chapters)
     curses.wrapper(curses_main)
