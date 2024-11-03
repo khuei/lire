@@ -6,3 +6,19 @@ from ebooklib import epub
 from bs4 import BeautifulSoup
 import curses
 import os
+
+def main():
+    parser = argparse.ArgumentParser(description='EPUB TUI Reader.')
+    parser.add_argument('input_path', type=str, help='Path to EPUB file')
+    parser.add_argument('-o', '--output', type=str, help='Output directory for chapter text files')
+    args = parser.parse_args()
+    book = epub.read_epub(args.input_path)
+    chapters = extract_text_by_chapter(book)
+    if args.output:
+        save_chapters_to_files(chapters, args.output)
+    def curses_main(stdscr):
+        display_chapters(stdscr, chapters)
+    curses.wrapper(curses_main)
+
+if __name__ == "__main__":
+    main()
