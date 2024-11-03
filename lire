@@ -16,6 +16,36 @@ def extract_text_by_chapter(book):
         chapters.append(chapter_text)
     return chapters
 
+def display_chapters(stdscr, chapters):
+    curses.curs_set(0)
+    current_chapter = 0
+    start_line = 0
+    height, _ = stdscr.getmaxyx()
+    total_chapters = len(chapters)
+    while current_chapter < total_chapters:
+        stdscr.clear()
+        chapter = chapters[current_chapter]
+        display_chapter(stdscr, chapter, start_line, height, current_chapter, total_chapters)
+        stdscr.refresh()
+        visible_lines = height - 2
+        key = stdscr.getch()
+        if key == curses.KEY_DOWN:
+            if start_line < len(wrap_text(chapter, curses.COLS)) - visible_lines:
+                start_line += 1
+        elif key == curses.KEY_UP:
+            if start_line > 0:
+                start_line -= 1
+        elif key == curses.KEY_RIGHT or key == ord('d'):
+            if current_chapter < total_chapters - 1:
+                current_chapter += 1
+                start_line = 0
+        elif key == curses.KEY_LEFT or key == ord('a'):
+            if current_chapter > 0:
+                current_chapter -= 1
+                start_line = 0
+        elif key == ord('q'):
+            break
+
 def main():
     parser = argparse.ArgumentParser(description='EPUB TUI Reader.')
     parser.add_argument('input_path', type=str, help='Path to EPUB file')
