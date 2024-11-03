@@ -7,6 +7,15 @@ from bs4 import BeautifulSoup
 import curses
 import os
 
+def extract_text_by_chapter(book):
+    chapters = []
+    for item in book.get_items_of_type(ebooklib.ITEM_DOCUMENT):
+        content = item.get_body_content()
+        soup = BeautifulSoup(content, 'html.parser')
+        chapter_text = soup.get_text()
+        chapters.append(chapter_text)
+    return chapters
+
 def main():
     parser = argparse.ArgumentParser(description='EPUB TUI Reader.')
     parser.add_argument('input_path', type=str, help='Path to EPUB file')
