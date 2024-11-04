@@ -131,6 +131,8 @@ def display_chapters(stdscr, chapters):
         elif key == ord(' '):
             global is_redacted
             is_redacted = not is_redacted
+        elif key == ord('P'):
+            blank_index = -1;
         elif key == ord('q'):
             break
 
