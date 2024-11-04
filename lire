@@ -8,6 +8,7 @@ import curses
 
 blank_index = -1
 word_index = 0
+is_redacted = True
 
 def extract_text_by_chapter(book):
     chapters = []
@@ -50,7 +51,7 @@ def wrap_paragraph(paragraph_lines, width):
         words.extend(line.split())
 
     for word in words:
-        if word_index <= blank_index:
+        if is_redacted and word_index <= blank_index:
             word = '█' * len(word)
 
         if len(current_line) + len(word) + (1 if current_line else 0) > width:
@@ -127,6 +128,9 @@ def display_chapters(stdscr, chapters):
         elif key == ord('p'):
             if (blank_index > -1):
                 blank_index -= 1;
+        elif key == ord(' '):
+            global is_redacted
+            is_redacted = not is_redacted
         elif key == ord('q'):
             break
 
