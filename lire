@@ -8,11 +8,13 @@ import curses
 
 def extract_text_by_chapter(book):
     chapters = []
+
     for item in book.get_items_of_type(ebooklib.ITEM_DOCUMENT):
         content = item.get_body_content()
         soup = BeautifulSoup(content, 'html.parser')
         chapter_text = soup.get_text()
         chapters.append(chapter_text)
+
     return chapters
 
 def wrap_text(text, width):
@@ -86,7 +88,7 @@ def display_chapters(stdscr, chapters):
     start_line = 0
     blank_index = -1
     height, width = stdscr.getmaxyx()
-    total_chapters = len(chapters)
+    total_chapters = len(chapters) - 1
 
     while current_chapter < total_chapters:
         stdscr.clear()
@@ -137,6 +139,7 @@ def main():
 
     def curses_main(stdscr):
         display_chapters(stdscr, chapters)
+
     curses.wrapper(curses_main)
 
 if __name__ == "__main__":
