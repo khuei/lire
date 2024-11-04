@@ -93,10 +93,10 @@ def display_chapters(stdscr, chapters):
             if current_chapter > 0:
                 current_chapter -= 1
                 start_line = 0
-        elif key == ord(' '):
+        elif key == ord('f'):
             if start_line < len(wrap_text(chapter, curses.COLS)) - visible_lines:
                 start_line += visible_lines
-        elif key == curses.KEY_BACKSPACE:
+        elif key == ord('b'):
             if start_line >= visible_lines:
                 start_line -= visible_lines
             elif start_line - visible_lines <= 0:
