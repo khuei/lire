@@ -5,7 +5,6 @@ import ebooklib
 from ebooklib import epub
 from bs4 import BeautifulSoup
 import curses
-import shutil
 
 def extract_text_by_chapter(book):
     chapters = []
