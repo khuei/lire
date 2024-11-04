@@ -50,16 +50,31 @@ def wrap_paragraph(paragraph_lines, width):
             current_line = ""
     return wrapped
 
-def display_chapter(stdscr, chapter, start_line, height, width, chapter_number, total_chapters):
+def display_chapter(stdscr, chapter, start_line, height, width, chapter_number, total_chapters, blank_index):
     lines = wrap_text(chapter, curses.COLS)
     visible_lines = height - 2
+    word_count = 0
 
     max_lines = len(lines)
     longest_line = max(len(line) for line in lines)
-    left_padding = (width - longest_line) // 2;
+    left_padding = (width - longest_line) // 2
 
     for i in range(start_line, min(start_line + visible_lines, max_lines)):
-        stdscr.addstr(i - start_line, left_padding, lines[i])
+        displayed_line = ""
+
+        words = lines[i].split()
+        for j, word in enumerate(words):
+            if blank_index >= word_count:
+                displayed_line += "█" * len(word)
+            else:
+                displayed_line += word
+
+            word_count += 1
+
+            if j < len(words) - 1:
+                displayed_line += " "
+
+        stdscr.addstr(i - start_line, left_padding, displayed_line)
 
     footer = f"Page {chapter_number + 1} of {total_chapters} | Showing lines {start_line + 1} to {min(start_line + visible_lines, max_lines)} of {max_lines}"
     stdscr.addstr(height - 1, curses.COLS - len(footer) - 1, footer)
@@ -69,13 +84,14 @@ def display_chapters(stdscr, chapters):
 
     current_chapter = 0
     start_line = 0
+    blank_index = -1
     height, width = stdscr.getmaxyx()
     total_chapters = len(chapters)
 
     while current_chapter < total_chapters:
         stdscr.clear()
         chapter = chapters[current_chapter]
-        display_chapter(stdscr, chapter, start_line, height, width, current_chapter, total_chapters)
+        display_chapter(stdscr, chapter, start_line, height, width, current_chapter, total_chapters, blank_index)
         stdscr.refresh()
         visible_lines = height - 2
         key = stdscr.getch()
@@ -89,10 +105,12 @@ def display_chapters(stdscr, chapters):
             if current_chapter < total_chapters - 1:
                 current_chapter += 1
                 start_line = 0
+                blank_index = -1
         elif key == curses.KEY_LEFT or key == ord('h'):
             if current_chapter > 0:
                 current_chapter -= 1
                 start_line = 0
+                blank_index = -1
         elif key == ord('f'):
             if start_line < len(wrap_text(chapter, curses.COLS)) - visible_lines:
                 start_line += visible_lines
@@ -101,6 +119,11 @@ def display_chapters(stdscr, chapters):
                 start_line -= visible_lines
             elif start_line - visible_lines <= 0:
                 start_line = 0
+        elif key == ord('n'):
+            blank_index += 1;
+        elif key == ord('p'):
+            if (blank_index > -1):
+                blank_index -= 1;
         elif key == ord('q'):
             break
 
