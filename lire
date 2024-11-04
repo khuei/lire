@@ -50,12 +50,17 @@ def wrap_paragraph(paragraph_lines, width):
             current_line = ""
     return wrapped
 
-def display_chapter(stdscr, chapter, start_line, height, chapter_number, total_chapters):
+def display_chapter(stdscr, chapter, start_line, height, width, chapter_number, total_chapters):
     lines = wrap_text(chapter, curses.COLS)
-    max_lines = len(lines)
     visible_lines = height - 2
+
+    max_lines = len(lines)
+    longest_line = max(len(line) for line in lines)
+    left_padding = (width - longest_line) // 2;
+
     for i in range(start_line, min(start_line + visible_lines, max_lines)):
-        stdscr.addstr(i - start_line, 0, lines[i])
+        stdscr.addstr(i - start_line, left_padding, lines[i])
+
     footer = f"Page {chapter_number + 1} of {total_chapters} | Showing lines {start_line + 1} to {min(start_line + visible_lines, max_lines)} of {max_lines}"
     stdscr.addstr(height - 1, curses.COLS - len(footer) - 1, footer)
 
@@ -64,13 +69,13 @@ def display_chapters(stdscr, chapters):
 
     current_chapter = 0
     start_line = 0
-    height, _ = stdscr.getmaxyx()
+    height, width = stdscr.getmaxyx()
     total_chapters = len(chapters)
 
     while current_chapter < total_chapters:
         stdscr.clear()
         chapter = chapters[current_chapter]
-        display_chapter(stdscr, chapter, start_line, height, current_chapter, total_chapters)
+        display_chapter(stdscr, chapter, start_line, height, width, current_chapter, total_chapters)
         stdscr.refresh()
         visible_lines = height - 2
         key = stdscr.getch()
