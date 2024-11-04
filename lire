@@ -5,6 +5,7 @@ import ebooklib
 from ebooklib import epub
 from bs4 import BeautifulSoup
 import curses
+import shutil
 
 def extract_text_by_chapter(book):
     chapters = []
@@ -61,10 +62,12 @@ def display_chapter(stdscr, chapter, start_line, height, chapter_number, total_c
 
 def display_chapters(stdscr, chapters):
     curses.curs_set(0)
+
     current_chapter = 0
     start_line = 0
     height, _ = stdscr.getmaxyx()
     total_chapters = len(chapters)
+
     while current_chapter < total_chapters:
         stdscr.clear()
         chapter = chapters[current_chapter]
@@ -85,6 +88,14 @@ def display_chapters(stdscr, chapters):
         elif key == curses.KEY_LEFT or key == ord('h'):
             if current_chapter > 0:
                 current_chapter -= 1
+                start_line = 0
+        elif key == ord(' '):
+            if start_line < len(wrap_text(chapter, curses.COLS)) - visible_lines:
+                start_line += visible_lines
+        elif key == curses.KEY_BACKSPACE:
+            if start_line >= visible_lines:
+                start_line -= visible_lines
+            elif start_line - visible_lines <= 0:
                 start_line = 0
         elif key == ord('q'):
             break
