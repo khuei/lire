@@ -10,7 +10,7 @@ blank_index = -1
 word_index = 0
 is_redacted = True
 
-def extract_text_by_chapter(book):
+def extract_content(book):
     chapters = []
 
     for item in book.get_items_of_type(ebooklib.ITEM_DOCUMENT):
@@ -83,7 +83,7 @@ def display_chapter(stdscr, chapter, start_line, height, width, chapter_number, 
     footer = f"Page {chapter_number + 1} of {total_chapters} | Showing lines {start_line + 1} to {min(start_line + visible_lines, max_lines)} of {max_lines}"
     stdscr.addstr(height - 1, curses.COLS - len(footer) - 1, footer)
 
-def display_chapters(stdscr, chapters):
+def tui_display(stdscr, chapters):
     curses.curs_set(0)
 
     global blank_index
@@ -142,10 +142,10 @@ def main():
     parser.add_argument('-o', '--output', type=str, help='Output directory for chapter text files')
     args = parser.parse_args()
     book = epub.read_epub(args.input_path)
-    chapters = extract_text_by_chapter(book)
+    chapters = extract_content(book)
 
     def curses_main(stdscr):
-        display_chapters(stdscr, chapters)
+        tui_display(stdscr, chapters)
 
     curses.wrapper(curses_main)
 
