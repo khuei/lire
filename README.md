@@ -29,9 +29,9 @@
 
 - Python 3.6+
 - Required Python packages:
-  - `argparse`
   - `ebooklib`
   - `beautifulsoup4`
+  - `argparse` (built-in module in most Python3 distributions)
   - `curses` (built-in module in most Python distributions)
 
 ## Usage
